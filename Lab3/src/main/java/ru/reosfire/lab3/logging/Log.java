@@ -24,12 +24,19 @@ public class Log {
         logger.close();
     }
 
+    public static void i(Object info) {
+        i(info.toString());
+    }
     public static void i(String info) {
         assertLoggerInitialized();
         printDateTime();
         logger.print("info");
-        logger.print(" | ");
+        logger.print("  | ");
         logger.println(info);
+    }
+
+    public static void e(Object info) {
+        e(info.toString());
     }
     public static void e(String error) {
         assertLoggerInitialized();

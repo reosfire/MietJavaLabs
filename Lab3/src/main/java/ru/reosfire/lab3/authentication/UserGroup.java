@@ -1,4 +1,4 @@
-package ru.reosfire.lab3.configuration;
+package ru.reosfire.lab3.authentication;
 
 public enum UserGroup {
     ROOT,

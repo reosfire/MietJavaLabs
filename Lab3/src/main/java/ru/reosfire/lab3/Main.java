@@ -10,10 +10,8 @@ public class Main {
         Log.i("very important info");
 
         Config config = new ConfigBasedOnProperties("custom.props");
-        Log.i(config.getLogin());
-        Log.i(config.getPassword());
-        Log.i(config.getGroup().name());
-        Log.i(config.isDebugMode().toString());
-        Log.i(config.isAutotestsMode().toString());
+        Log.e(config.getUser());
+        Log.i(config.isDebugMode());
+        Log.i(config.isAutotestsMode());
     }
 }

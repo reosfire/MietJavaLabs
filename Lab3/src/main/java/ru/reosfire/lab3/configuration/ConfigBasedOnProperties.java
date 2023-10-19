@@ -1,5 +1,8 @@
 package ru.reosfire.lab3.configuration;
 
+import ru.reosfire.lab3.authentication.User;
+import ru.reosfire.lab3.authentication.UserGroup;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -66,16 +69,8 @@ public class ConfigBasedOnProperties implements Config {
     }
 
     @Override
-    public String getLogin() {
-        return login;
-    }
-    @Override
-    public String getPassword() {
-        return password;
-    }
-    @Override
-    public UserGroup getGroup() {
-        return group;
+    public User getUser() {
+        return new User(login, password, group);
     }
     @Override
     public Boolean isDebugMode() {

@@ -1,9 +1,9 @@
 package ru.reosfire.lab3.configuration;
 
+import ru.reosfire.lab3.authentication.User;
+
 public interface Config {
-    String getLogin();
-    String getPassword();
-    UserGroup getGroup();
+    User getUser();
     Boolean isDebugMode();
     Boolean isAutotestsMode();
 }
