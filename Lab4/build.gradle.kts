@@ -12,3 +12,9 @@ repositories {
 dependencies {
 
 }
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "ru.reosfire.lab4.Main"
+    }
+}
