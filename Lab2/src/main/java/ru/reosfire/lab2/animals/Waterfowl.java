@@ -1,17 +1,18 @@
 package ru.reosfire.lab2.animals;
 
-import ru.reosfire.lab2.enclosures.Enclosure;
+import ru.reosfire.lab2.enclosures.Aquarium;
 
 import java.time.Duration;
 
-public class Waterfowl extends Animal<Waterfowl> {
-
-    public Waterfowl(double weight, Duration lifeTime) {
+public class Waterfowl extends Animal {
+    private final Aquarium container;
+    public Waterfowl(double weight, Duration lifeTime, Aquarium container) {
         super(weight, lifeTime);
+        this.container = container;
     }
 
     @Override
-    public void Move(Enclosure<Waterfowl> container) {
+    public void Move() {
         container.add(this);
     }
 }

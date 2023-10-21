@@ -1,10 +1,8 @@
 package ru.reosfire.lab2.animals;
 
-import ru.reosfire.lab2.enclosures.Enclosure;
-
 import java.time.Duration;
 
-public abstract class Animal<TSelf extends Animal<TSelf>> {
+public abstract class Animal {
     public final double Weight;
     public final Duration LifeTime;
 
@@ -13,7 +11,7 @@ public abstract class Animal<TSelf extends Animal<TSelf>> {
         LifeTime = lifeTime;
     }
 
-    public abstract void Move(Enclosure<TSelf> container);
+    public abstract void Move();
 
     @Override
     public String toString() {
