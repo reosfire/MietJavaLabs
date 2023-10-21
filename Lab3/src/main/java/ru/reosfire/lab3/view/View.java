@@ -1,28 +1,33 @@
 package ru.reosfire.lab3.view;
 
-import java.util.Scanner;
+import ru.reosfire.lab3.authentication.Credentials;
 
 public class View implements AutoCloseable {
+    private final ConsolePresenter presenter = new ConsolePresenter();
 
-    private final Scanner input = new Scanner(System.in);
-
-    public void showUnknownCommandError() {
-        printError("Вы ввели некоррекнтую команду. Можно использовать только команды из списка!");
+    public Credentials readCredentials() {
+        presenter.printWelcomeLine("Authorization:");
+        String login = presenter.readNotEmptyString("Login: ", 1);
+        String password = presenter.readNotEmptyString("Password: ", 1);
+        return new Credentials(login, password);
     }
 
     public String requestCommandId() {
-        System.out.print("Введите команду из списка выше: ");
-        return input.nextLine();
+        return presenter.readLine("Enter command from list above: ");
     }
 
-    private void printError(String error) {
-        System.out.println(ConsoleColors.RED + error + ConsoleColors.RESET);
+    public void showUnknownCommandError() {
+        presenter.printError("You entered incorrect command. Please use command from list above");
+    }
+
+    public void showUnauthorizedError() {
+        presenter.printError("Wrong login-password combination.");
     }
 
     @Override
     public void close() {
         try {
-            input.close();
+            presenter.close();
         } catch (Exception e) {
             throw new RuntimeException("Error while closing view", e);
         }

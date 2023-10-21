@@ -1,7 +1,6 @@
 package ru.reosfire.lab3.controller;
 
 import ru.reosfire.lab3.configuration.Config;
-import ru.reosfire.lab3.configuration.ConfigBasedOnProperties;
 import ru.reosfire.lab3.controller.commands.Command;
 import ru.reosfire.lab3.view.View;
 
@@ -13,9 +12,9 @@ public class Controller {
     private final CommandContext context;
     private final Map<String, Command> commands;
 
-    public Controller(List<Command> commands) {
+    public Controller(List<Command> commands, Config config, View view) {
         this.commands = createCommandsMap(commands);
-        this.context = constructContext();
+        this.context = new CommandContext(config, view);
     }
 
     public void startLooping() {
@@ -32,11 +31,5 @@ public class Controller {
         }
 
         return result;
-    }
-
-    private CommandContext constructContext() {
-        Config config = new ConfigBasedOnProperties("Program");
-        View view = new View();
-        return new CommandContext(config, view);
     }
 }
