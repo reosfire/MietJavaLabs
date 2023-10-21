@@ -68,6 +68,12 @@ public class ConsolePresenter implements AutoCloseable {
         return scanner.nextLine();
     }
 
+    public void printInfoLine(String info) {
+        printInfoLine(info, 0);
+    }
+    public void printInfoLine(String info, int level) {
+        printGreenLine(getPadding(level) + info);
+    }
 
     public void printWelcome(String welcome) {
         printWelcome(welcome, 0);
@@ -101,14 +107,25 @@ public class ConsolePresenter implements AutoCloseable {
         printGreenLine(repeatingString('-', length));
     }
 
-    private String getPadding(int level) {
-        return repeatingString(' ', level * 3);
+    public void printLine() {
+        System.out.println();
+    }
+    public void printLine(String line) {
+        System.out.println(line);
     }
 
-    private String repeatingString(char c, int length) {
+    public void print(String line) {
+        System.out.print(line);
+    }
+
+    public String repeatingString(char c, int length) {
         char[] chars = new char[length];
         Arrays.fill(chars, c);
         return new String(chars);
+    }
+
+    private String getPadding(int level) {
+        return repeatingString(' ', level * 3);
     }
 
     private void printYellowLine(String line) {
@@ -120,9 +137,8 @@ public class ConsolePresenter implements AutoCloseable {
     private void printGreenLine(String line) {
         printColoredLine(line, ConsoleColors.GREEN);
     }
-
     private void printColoredLine(String line, String color) {
-        System.out.println(color + line + ConsoleColors.RESET);
+        printLine(color + line + ConsoleColors.RESET);
     }
 
     private void printYellow(String line) {
@@ -134,9 +150,8 @@ public class ConsolePresenter implements AutoCloseable {
     private void printGreen(String line) {
         printColored(line, ConsoleColors.GREEN);
     }
-
     private void printColored(String line, String color) {
-        System.out.print(color + line + ConsoleColors.RESET);
+        print(color + line + ConsoleColors.RESET);
     }
 
     @Override
