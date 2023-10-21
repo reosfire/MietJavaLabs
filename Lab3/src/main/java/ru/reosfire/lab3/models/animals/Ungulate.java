@@ -1,12 +1,12 @@
 package ru.reosfire.lab3.models.animals;
 
-import ru.reosfire.lab3.models.enclosures.Terrarium;
+import ru.reosfire.lab3.models.enclosures.Opened;
 
 import java.time.Duration;
 
-public class ColdBlooded extends Animal {
-    private final Terrarium container;
-    public ColdBlooded(double weight, Duration lifeTime, Terrarium container) {
+public class Ungulate extends Animal {
+    private final Opened container;
+    public Ungulate(double weight, Duration lifeTime, Opened container) {
         super(weight, lifeTime);
         this.container = container;
     }

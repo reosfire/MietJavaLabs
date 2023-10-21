@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class Enclosure<T extends Animal<T>> {
+public abstract class Enclosure<T extends Animal> {
     protected List<T> animals = new ArrayList<>();
 
     public void add(T animal) {
