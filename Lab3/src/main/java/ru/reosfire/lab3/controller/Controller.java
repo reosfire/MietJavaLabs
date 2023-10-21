@@ -1,8 +1,6 @@
 package ru.reosfire.lab3.controller;
 
-import ru.reosfire.lab3.configuration.Config;
 import ru.reosfire.lab3.controller.commands.Command;
-import ru.reosfire.lab3.view.View;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +11,11 @@ public class Controller {
     private final Map<String, Command> commandsMap;
     private final List<Command> commandsList;
 
-    public Controller(List<Command> commands, Config config, View view) {
+    public Controller(List<Command> commands, CommandContext context) {
         this.commandsList = commands;
         this.commandsMap = createCommandsMap(commands);
-        this.context = new CommandContext(config, view);
+
+        this.context = context;
     }
 
     public void startLooping() {

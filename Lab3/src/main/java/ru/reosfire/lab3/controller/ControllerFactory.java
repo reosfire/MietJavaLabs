@@ -5,8 +5,15 @@ import ru.reosfire.lab3.authentication.UnauthorizedException;
 import ru.reosfire.lab3.authentication.User;
 import ru.reosfire.lab3.authentication.UserGroup;
 import ru.reosfire.lab3.configuration.Config;
-import ru.reosfire.lab3.controller.commands.CloseCommand;
 import ru.reosfire.lab3.controller.commands.Command;
+import ru.reosfire.lab3.controller.commands.edit.AddCommand;
+import ru.reosfire.lab3.controller.commands.edit.RemoveCommand;
+import ru.reosfire.lab3.controller.commands.edit.UpdateCommand;
+import ru.reosfire.lab3.controller.commands.edit.serialization.ReadCommand;
+import ru.reosfire.lab3.controller.commands.edit.serialization.WriteCommand;
+import ru.reosfire.lab3.controller.commands.system.AutotestsCommand;
+import ru.reosfire.lab3.controller.commands.system.CloseCommand;
+import ru.reosfire.lab3.models.Zoo;
 import ru.reosfire.lab3.view.View;
 
 import java.util.ArrayList;
@@ -48,21 +55,34 @@ public class ControllerFactory {
     }
 
     private Controller createForUser() {
-        return new Controller(commandsForUser(), config, view);
+        return new Controller(commandsForUser(), createContext());
     }
 
     private Controller createForRoot() {
-        return new Controller(commandsForRoot(), config, view);
+        return new Controller(commandsForRoot(), createContext());
     }
 
     private List<Command> commandsForUser() {
         List<Command> commands = new ArrayList<>();
         commands.add(new CloseCommand());
+
+        commands.add(new ReadCommand());
+        commands.add(new WriteCommand());
+
+        commands.add(new AddCommand());
+        commands.add(new RemoveCommand());
+        commands.add(new UpdateCommand());
         return commands;
     }
 
     private List<Command> commandsForRoot() {
         List<Command> commands = commandsForUser();
+        commands.add(new AutotestsCommand());
         return commands;
+    }
+
+    private CommandContext createContext() {
+        boolean debugMode = config.getUser().getGroup() == UserGroup.ROOT || config.isDebugMode();
+        return new CommandContext(config, view, new Zoo(), debugMode);
     }
 }

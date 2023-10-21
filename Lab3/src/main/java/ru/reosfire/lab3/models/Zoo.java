@@ -29,18 +29,4 @@ public class Zoo {
     public Ungulate createUngulate(double weight, Duration lifeTime) {
         return new Ungulate(weight, lifeTime, opened);
     }
-
-    public void print() {
-        System.out.println("Terrarium: ");
-        System.out.println(terrarium);
-
-        System.out.println("Aquarium: ");
-        System.out.println(aquarium);
-
-        System.out.println("Opened: ");
-        System.out.println(opened);
-
-        System.out.println("Covered: ");
-        System.out.println(covered);
-    }
 }
