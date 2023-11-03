@@ -16,6 +16,12 @@ public class WriteCommand implements Command {
 
     @Override
     public void execute(CommandContext context) {
+        try {
+            context.getZoo().serializeToFile(context.DATABASE_FILE);
 
+            context.view.showSerializationSuccess();
+        } catch (Exception e) {
+            context.view.showSerializationError();
+        }
     }
 }

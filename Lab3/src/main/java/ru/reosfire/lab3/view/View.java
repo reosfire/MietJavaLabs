@@ -2,6 +2,7 @@ package ru.reosfire.lab3.view;
 
 import ru.reosfire.lab3.authentication.Credentials;
 import ru.reosfire.lab3.controller.commands.Command;
+import ru.reosfire.lab3.models.Zoo;
 
 import java.util.List;
 
@@ -9,6 +10,10 @@ public class View implements AutoCloseable {
     private static final int commandsListLength = 60;
 
     private final ConsolePresenter presenter = new ConsolePresenter();
+
+    public void printZoo(Zoo zoo) {
+
+    }
 
     public void printCommandsList(List<Command> commands) {
         presenter.printLine();
@@ -37,6 +42,19 @@ public class View implements AutoCloseable {
     public void showUnauthorizedError() {
         presenter.printError("Wrong login-password combination.");
     }
+    public void showDeserializationError() {
+        presenter.printError("Error while deserializing zoo. Watch logs for more details");
+    }
+    public void showSerializationError() {
+        presenter.printError("Error while serializing zoo. Watch logs for more details");
+    }
+    public void showSerializationSuccess() {
+        presenter.printError("Serialization end-up successfully");
+    }
+    public void showDeserializationSuccess() {
+        presenter.printError("Deserialization end-up successfully");
+    }
+
 
     @Override
     public void close() {
