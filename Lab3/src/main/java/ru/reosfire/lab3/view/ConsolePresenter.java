@@ -172,7 +172,7 @@ public class ConsolePresenter implements AutoCloseable {
         System.out.print(line);
     }
 
-    public String repeatingString(char c, int length) {
+    public static String repeatingString(char c, int length) {
         char[] chars = new char[length];
         Arrays.fill(chars, c);
         return new String(chars);

@@ -35,7 +35,8 @@ public class View implements AutoCloseable {
             String name = command.getName();
             String id = command.getId();
             int sumLen = name.length() + id.length();
-            presenter.printInfoLine(name + " " + presenter.repeatingString('.', commandsListLength - sumLen - 2) + " " + id);
+            String dots = ConsolePresenter.repeatingString('.', commandsListLength - sumLen - 2);
+            presenter.printInfoLine(name + " " + dots + " " + id);
         }
     }
 
