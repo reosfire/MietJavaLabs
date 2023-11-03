@@ -17,6 +17,7 @@ public abstract class Enclosure<T extends Animal> {
 
     @Override
     public String toString() {
+        if (animals.isEmpty()) return "Empty";
         return animals.stream().map(Animal::toString).collect(Collectors.joining("\n")) + "\n";
     }
 

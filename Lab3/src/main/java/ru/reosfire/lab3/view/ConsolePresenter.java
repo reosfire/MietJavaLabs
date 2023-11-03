@@ -68,24 +68,45 @@ public class ConsolePresenter implements AutoCloseable {
         return scanner.nextLine();
     }
 
-    public void printInfoLine(String info) {
-        printInfoLine(info, 0);
-    }
-    public void printInfoLine(String info, int level) {
-        printGreenLine(getPadding(level) + info);
+
+
+    public void printBlock(String block, int level) {
+        for (String line : block.split("\n")) {
+            printLine(getPadding(level) + line);
+        }
     }
 
+
+
+    //welcome
     public void printWelcome(String welcome) {
         printWelcome(welcome, 0);
     }
     public void printWelcome(String welcome, int level) {
-        printYellow(getPadding(level) + welcome);
+        printPurple(getPadding(level) + welcome);
     }
     public void printWelcomeLine(String welcome) {
         printWelcomeLine(welcome, 0);
     }
     public void printWelcomeLine(String welcome, int level) {
-        printYellowLine(getPadding(level) + welcome);
+        printPurpleLine(getPadding(level) + welcome);
+    }
+
+
+
+    //info/success/error
+    public void printInfoLine(String info) {
+        printInfoLine(info, 0);
+    }
+    public void printInfoLine(String info, int level) {
+        printYellowLine(getPadding(level) + info);
+    }
+
+    public void printSuccess(String success) {
+        printSuccess(success, 0);
+    }
+    public void printSuccess(String success, int level) {
+        printGreenLine(getPadding(level) + success);
     }
 
     public void printError(String error) {
@@ -95,6 +116,9 @@ public class ConsolePresenter implements AutoCloseable {
         printRedLine(getPadding(level) + error);
     }
 
+
+
+    //header
     public void printHeader(String header) {
         printHeader(header, 100);
     }
@@ -102,11 +126,14 @@ public class ConsolePresenter implements AutoCloseable {
         int headerLen = header.length();
         int startLen = (length - headerLen) / 2;
         int endLen = length - startLen - headerLen;
-        printGreenLine(repeatingString('-', length));
-        printGreenLine(repeatingString('-', startLen) + header + repeatingString('-', endLen));
-        printGreenLine(repeatingString('-', length));
+        printBlueLine(repeatingString('-', length));
+        printBlueLine(repeatingString('-', startLen) + header + repeatingString('-', endLen));
+        printBlueLine(repeatingString('-', length));
     }
 
+
+
+    //essentials
     public void printLine() {
         System.out.println();
     }
@@ -128,6 +155,8 @@ public class ConsolePresenter implements AutoCloseable {
         return repeatingString(' ', level * 3);
     }
 
+
+    //colored
     private void printYellowLine(String line) {
         printColoredLine(line, ConsoleColors.YELLOW);
     }
@@ -136,6 +165,12 @@ public class ConsolePresenter implements AutoCloseable {
     }
     private void printGreenLine(String line) {
         printColoredLine(line, ConsoleColors.GREEN);
+    }
+    private void printPurpleLine(String line) {
+        printColoredLine(line, ConsoleColors.PURPLE);
+    }
+    private void printBlueLine(String line) {
+        printColoredLine(line, ConsoleColors.BLUE_BRIGHT);
     }
     private void printColoredLine(String line, String color) {
         printLine(color + line + ConsoleColors.RESET);
@@ -149,6 +184,12 @@ public class ConsolePresenter implements AutoCloseable {
     }
     private void printGreen(String line) {
         printColored(line, ConsoleColors.GREEN);
+    }
+    private void printPurple(String line) {
+        printColored(line, ConsoleColors.PURPLE);
+    }
+    private void printBlue(String line) {
+        printColored(line, ConsoleColors.BLUE_BRIGHT);
     }
     private void printColored(String line, String color) {
         print(color + line + ConsoleColors.RESET);

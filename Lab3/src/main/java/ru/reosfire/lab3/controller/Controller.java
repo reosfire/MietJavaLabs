@@ -19,6 +19,8 @@ public class Controller {
     }
 
     public void startLooping() {
+        context.view.printProgramWelcomeFor(context.config.getUser());
+
         while (!context.isInterrupted()) {
             context.view.printCommandsList(commandsList);
             Command requestedCommand = commandsMap.get(context.view.requestCommandId());

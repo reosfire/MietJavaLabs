@@ -17,7 +17,7 @@ public abstract class Animal {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "   Weight: " + Weight + "  Lifetime: " + LifeTime.toDays() + " days";
+        return getClass().getSimpleName() + ":\n   Weight: " + Weight + "\n   Lifetime: " + LifeTime.toDays() + " days\n";
     }
 
     public abstract void serialize(OutputStreamWriter writer) throws IOException;

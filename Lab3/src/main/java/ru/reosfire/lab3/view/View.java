@@ -1,6 +1,7 @@
 package ru.reosfire.lab3.view;
 
 import ru.reosfire.lab3.authentication.Credentials;
+import ru.reosfire.lab3.authentication.User;
 import ru.reosfire.lab3.controller.commands.Command;
 import ru.reosfire.lab3.models.Zoo;
 
@@ -12,7 +13,19 @@ public class View implements AutoCloseable {
     private final ConsolePresenter presenter = new ConsolePresenter();
 
     public void printZoo(Zoo zoo) {
+        presenter.printHeader(" ZOO ");
 
+        presenter.printLine("Terrarium:");
+        presenter.printBlock(zoo.terrarium.toString(), 1);
+
+        presenter.printLine("Aquarium:");
+        presenter.printBlock(zoo.aquarium.toString(), 1);
+
+        presenter.printLine("Covered:");
+        presenter.printBlock(zoo.covered.toString(), 1);
+
+        presenter.printLine("Opened:");
+        presenter.printBlock(zoo.opened.toString(), 1);
     }
 
     public void printCommandsList(List<Command> commands) {
@@ -23,6 +36,11 @@ public class View implements AutoCloseable {
             int sumLen = name.length() + id.length();
             presenter.printInfoLine(name + " " + presenter.repeatingString('.', commandsListLength - sumLen - 2) + " " + id);
         }
+    }
+
+    public void printProgramWelcomeFor(User user) {
+        presenter.printLine();
+        presenter.printSuccess("Welcome " + user.getLogin() + "! Your group is: " + user.getGroup().name());
     }
 
     public Credentials readCredentials() {
@@ -49,10 +67,10 @@ public class View implements AutoCloseable {
         presenter.printError("Error while serializing zoo. Watch logs for more details");
     }
     public void showSerializationSuccess() {
-        presenter.printError("Serialization end-up successfully");
+        presenter.printSuccess("Serialization end-up successfully");
     }
     public void showDeserializationSuccess() {
-        presenter.printError("Deserialization end-up successfully");
+        presenter.printSuccess("Deserialization end-up successfully");
     }
 
 

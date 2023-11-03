@@ -7,6 +7,7 @@ import ru.reosfire.lab3.authentication.UserGroup;
 import ru.reosfire.lab3.configuration.Config;
 import ru.reosfire.lab3.controller.commands.Command;
 import ru.reosfire.lab3.controller.commands.edit.AddCommand;
+import ru.reosfire.lab3.controller.commands.edit.PrintCommand;
 import ru.reosfire.lab3.controller.commands.edit.RemoveCommand;
 import ru.reosfire.lab3.controller.commands.edit.UpdateCommand;
 import ru.reosfire.lab3.controller.commands.edit.serialization.ReadCommand;
@@ -37,6 +38,7 @@ public class ControllerFactory {
                 return tryCreateOnce();
             } catch (UnauthorizedException e) {
                 view.showUnauthorizedError();
+                //TODO log
             }
         }
     }
@@ -68,6 +70,8 @@ public class ControllerFactory {
 
         commands.add(new ReadCommand());
         commands.add(new WriteCommand());
+
+        commands.add(new PrintCommand());
 
         commands.add(new AddCommand());
         commands.add(new RemoveCommand());

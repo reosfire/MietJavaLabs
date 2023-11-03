@@ -16,10 +16,10 @@ import java.time.Duration;
 import java.util.Scanner;
 
 public class Zoo {
-    private final Terrarium terrarium;
-    private final Aquarium aquarium;
-    private final Covered covered;
-    private final Opened opened;
+    public final Terrarium terrarium;
+    public final Aquarium aquarium;
+    public final Covered covered;
+    public final Opened opened;
 
     public Zoo() {
         terrarium = new Terrarium();
