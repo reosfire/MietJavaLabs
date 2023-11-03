@@ -44,7 +44,7 @@ public class ControllerFactory {
     }
 
     private Controller tryCreateOnce() throws UnauthorizedException {
-        if (authorityVerifier.authorize(view.readCredentials()))
+        if (authorityVerifier.authorize(view.requestCredentials()))
             return createFor(config.getUser());
         else throw new UnauthorizedException();
     }

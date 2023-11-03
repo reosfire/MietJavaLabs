@@ -2,9 +2,23 @@ package ru.reosfire.lab3.view;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class ConsolePresenter implements AutoCloseable {
     public final Scanner scanner = new Scanner(System.in);
+
+    public EnclosureType readEnclosureType(String welcome) {
+        String enclosureTypesString = Arrays.stream(EnclosureType.values()).map(Enum::name).collect(Collectors.joining(", "));
+        while (true) {
+            printWelcomeLine(welcome);
+            String read = readNotEmptyString("Enter one of [" + enclosureTypesString + "] enclosure types: ");
+            try {
+                return EnclosureType.valueOf(read);
+            } catch (Exception e) {
+                printError(read + " is not one of [" + enclosureTypesString + "]");
+            }
+        }
+    }
 
     public double readDouble(String welcome) {
         return readDouble(welcome, 0);
