@@ -14,6 +14,7 @@ import ru.reosfire.lab3.controller.commands.edit.serialization.ReadCommand;
 import ru.reosfire.lab3.controller.commands.edit.serialization.WriteCommand;
 import ru.reosfire.lab3.controller.commands.system.AutotestsCommand;
 import ru.reosfire.lab3.controller.commands.system.CloseCommand;
+import ru.reosfire.lab3.logging.Log;
 import ru.reosfire.lab3.models.Zoo;
 import ru.reosfire.lab3.view.View;
 
@@ -38,7 +39,7 @@ public class ControllerFactory {
                 return tryCreateOnce();
             } catch (UnauthorizedException e) {
                 view.showUnauthorizedError();
-                //TODO log
+                Log.e(e.getMessage());
             }
         }
     }

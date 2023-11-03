@@ -2,6 +2,7 @@ package ru.reosfire.lab3.controller.commands.edit;
 
 import ru.reosfire.lab3.controller.CommandContext;
 import ru.reosfire.lab3.controller.commands.Command;
+import ru.reosfire.lab3.logging.Log;
 import ru.reosfire.lab3.view.PropertyType;
 
 import java.time.Duration;
@@ -38,6 +39,7 @@ public class UpdateCommand implements Command {
             context.view.showUpdateSuccess(id);
         } catch (Exception e) {
             context.view.showUpdateIdNotFoundError(id);
+            Log.e(e.getMessage());
         }
     }
 }

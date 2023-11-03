@@ -2,6 +2,7 @@ package ru.reosfire.lab3.controller.commands.edit;
 
 import ru.reosfire.lab3.controller.CommandContext;
 import ru.reosfire.lab3.controller.commands.Command;
+import ru.reosfire.lab3.logging.Log;
 
 public class RemoveCommand implements Command {
     @Override
@@ -23,6 +24,7 @@ public class RemoveCommand implements Command {
             context.view.showRemoveSuccess(id);
         } catch (Exception e) {
             context.view.showRemoveIdNotFoundError(id);
+            Log.e(e.getMessage());
         }
     }
 }

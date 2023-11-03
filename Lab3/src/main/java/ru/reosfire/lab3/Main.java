@@ -12,12 +12,16 @@ public class Main {
     public static void main(String[] args) {
         Config config = new ConfigBasedOnProperties("custom.props");
 
-        Log.init("./Log.txt", config.isDebugMode() ? 4 : 2);
+        Log.init("./Log.txt", config.logLevel());
 
-        AuthorityVerifier authorityVerifier = new AuthorityVerifierByConfig(config);
+        try {
+            AuthorityVerifier authorityVerifier = new AuthorityVerifierByConfig(config);
 
-        ControllerFactory controllerFactory = new ControllerFactory(config, authorityVerifier);
-        Controller controller = controllerFactory.create();
-        controller.startLooping();
+            ControllerFactory controllerFactory = new ControllerFactory(config, authorityVerifier);
+            Controller controller = controllerFactory.create();
+            controller.startLooping();
+        } catch (Exception e) {
+            Log.ce(e.getMessage());
+        }
     }
 }

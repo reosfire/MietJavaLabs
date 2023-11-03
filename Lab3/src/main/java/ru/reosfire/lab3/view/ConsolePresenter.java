@@ -1,5 +1,7 @@
 package ru.reosfire.lab3.view;
 
+import ru.reosfire.lab3.logging.Log;
+
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -16,6 +18,7 @@ public class ConsolePresenter implements AutoCloseable {
                 return PropertyType.valueOf(read);
             } catch (Exception e) {
                 printError(read + " is not one of [" + propertyTypesString + "]");
+                Log.e(e.getMessage());
             }
         }
     }
@@ -29,6 +32,7 @@ public class ConsolePresenter implements AutoCloseable {
                 return EnclosureType.valueOf(read);
             } catch (Exception e) {
                 printError(read + " is not one of [" + enclosureTypesString + "]");
+                Log.e(e.getMessage());
             }
         }
     }
@@ -43,6 +47,7 @@ public class ConsolePresenter implements AutoCloseable {
                 return Double.parseDouble(read);
             } catch (Exception e) {
                 printError(read + " is not an double precise float.", level);
+                Log.e(e.getMessage());
             }
         }
     }
@@ -57,6 +62,7 @@ public class ConsolePresenter implements AutoCloseable {
                 return Long.parseLong(read);
             } catch (Exception e) {
                 printError(read + " is not an long integer.", level);
+                Log.e(e.getMessage());
             }
         }
     }
@@ -71,6 +77,7 @@ public class ConsolePresenter implements AutoCloseable {
                 return Integer.parseInt(read);
             } catch (Exception e) {
                 printError(read + " is not an integer.", level);
+                Log.e(e.getMessage());
             }
         }
     }
