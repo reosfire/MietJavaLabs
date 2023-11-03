@@ -9,24 +9,76 @@ import ru.reosfire.lab3.models.enclosures.Covered;
 import ru.reosfire.lab3.models.enclosures.Opened;
 import ru.reosfire.lab3.models.enclosures.Terrarium;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.time.Duration;
+import java.util.Scanner;
 
 public class Zoo {
-    private final Terrarium terrarium = new Terrarium();
-    private final Aquarium aquarium = new Aquarium();
-    private final Covered covered = new Covered();
-    private final Opened opened = new Opened();
+    private final Terrarium terrarium;
+    private final Aquarium aquarium;
+    private final Covered covered;
+    private final Opened opened;
+
+    public Zoo() {
+        terrarium = new Terrarium();
+        aquarium = new Aquarium();
+        covered = new Covered();
+        opened = new Opened();
+    }
+
+    public Zoo(Terrarium terrarium, Aquarium aquarium, Covered covered, Opened opened) {
+        this.terrarium = terrarium;
+        this.aquarium = aquarium;
+        this.covered = covered;
+        this.opened = opened;
+    }
 
     public ColdBlooded createColdBlooded(double weight, Duration lifeTime) {
-        return new ColdBlooded(weight, lifeTime, terrarium);
+        ColdBlooded coldBlooded = new ColdBlooded(weight, lifeTime, terrarium);
+        terrarium.add(coldBlooded);
+        return coldBlooded;
     }
     public Waterfowl createWaterfowl(double weight, Duration lifeTime) {
-        return new Waterfowl(weight, lifeTime, aquarium);
+        Waterfowl waterfowl = new Waterfowl(weight, lifeTime, aquarium);
+        aquarium.add(waterfowl);
+        return waterfowl;
     }
     public Feathered createFeathered(double weight, Duration lifeTime) {
-        return new Feathered(weight, lifeTime, covered);
+        Feathered feathered = new Feathered(weight, lifeTime, covered);
+        covered.add(feathered);
+        return feathered;
     }
     public Ungulate createUngulate(double weight, Duration lifeTime) {
-        return new Ungulate(weight, lifeTime, opened);
+        Ungulate ungulate = new Ungulate(weight, lifeTime, opened);
+        opened.add(ungulate);
+        return ungulate;
+    }
+
+    public void serializeToFile(File file) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
+            OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream)
+        ) {
+            terrarium.serialize(writer);
+            aquarium.serialize(writer);
+            covered.serialize(writer);
+            opened.serialize(writer);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while serializing Zoo", e);
+        }
+    }
+
+    public static Zoo deserializeFromFile(File file) {
+        try (Scanner scanner = new Scanner(file)) {
+            Terrarium terrarium = Terrarium.deserialize(scanner);
+            Aquarium aquarium = Aquarium.deserialize(scanner);
+            Covered covered = Covered.deserialize(scanner);
+            Opened opened = Opened.deserialize(scanner);
+
+            return new Zoo(terrarium, aquarium, covered, opened);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while deserializing Zoo", e);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package ru.reosfire.lab3.models.animals;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.time.Duration;
 
 public abstract class Animal {
@@ -17,4 +19,6 @@ public abstract class Animal {
     public String toString() {
         return getClass().getSimpleName() + "   Weight: " + Weight + "  Lifetime: " + LifeTime.toDays() + " days";
     }
+
+    public abstract void serialize(OutputStreamWriter writer) throws IOException;
 }
