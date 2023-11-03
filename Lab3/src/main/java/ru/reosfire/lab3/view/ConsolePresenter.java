@@ -7,6 +7,19 @@ import java.util.stream.Collectors;
 public class ConsolePresenter implements AutoCloseable {
     public final Scanner scanner = new Scanner(System.in);
 
+    public PropertyType readPropertyType(String welcome) {
+        String propertyTypesString = Arrays.stream(PropertyType.values()).map(Enum::name).collect(Collectors.joining(", "));
+        while (true) {
+            printWelcomeLine(welcome);
+            String read = readNotEmptyString("Enter one of [" + propertyTypesString + "] enclosure types: ");
+            try {
+                return PropertyType.valueOf(read);
+            } catch (Exception e) {
+                printError(read + " is not one of [" + propertyTypesString + "]");
+            }
+        }
+    }
+
     public EnclosureType readEnclosureType(String welcome) {
         String enclosureTypesString = Arrays.stream(EnclosureType.values()).map(Enum::name).collect(Collectors.joining(", "));
         while (true) {

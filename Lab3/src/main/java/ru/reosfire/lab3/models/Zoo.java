@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.time.Duration;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public class Zoo {
     public final Terrarium terrarium;
@@ -54,15 +55,15 @@ public class Zoo {
     }
 
     public void removeById(int id) {
-        for (Enclosure<?> enclosure : getEnclosures()) {
-            try {
-                enclosure.removeById(id);
-                return;
-            } catch (Exception ignored) {
+        tryOnAllEnclosures(it -> it.removeById(id), "Animal with id: " + id + " not found");
+    }
 
-            }
-        }
-        throw new RuntimeException("Animal with id: " + id + " not found");
+    public void updateWeight(int id, double weight) {
+        tryOnAllEnclosures(it -> it.updateWeight(id, weight), "Animal with id: " + id + " not found");
+    }
+
+    public void updateLifetime(int id, Duration lifetime) {
+        tryOnAllEnclosures(it -> it.updateLifetime(id, lifetime), "Animal with id: " + id + " not found");
     }
 
     public void serializeToFile(File file) {
@@ -88,6 +89,18 @@ public class Zoo {
         } catch (Exception e) {
             throw new RuntimeException("Error while deserializing Zoo", e);
         }
+    }
+
+    private void tryOnAllEnclosures(Consumer<Enclosure<?>> consumer, String notFoundError) {
+        for (Enclosure<?> enclosure : getEnclosures()) {
+            try {
+                consumer.accept(enclosure);
+                return;
+            } catch (Exception ignored) {
+
+            }
+        }
+        throw new RuntimeException(notFoundError);
     }
 
     private Enclosure<?>[] getEnclosures() {

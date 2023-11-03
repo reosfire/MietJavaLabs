@@ -59,22 +59,22 @@ public class View implements AutoCloseable {
         return Duration.ofDays(presenter.readInt("Enter animal lifetime days: "));
     }
 
-    public int requestAnimalId() {
+    public int requestAnimalIdToRemove() {
         return presenter.readInt("Enter id of animal to be removed: ");
+    }
+    public int requestAnimalIdToUpdate() {
+        return presenter.readInt("Enter id of animal to be updated: ");
     }
 
     public String requestCommandId() {
-        return presenter.readLine("Enter command from list above: ");
+        return presenter.readNotEmptyString("Enter command from list above: ");
     }
 
     public EnclosureType requestEnclosureTypeToAddAnimal() {
         return presenter.readEnclosureType("Enter enclosure type in which you wish to add animal");
     }
-    public EnclosureType requestEnclosureTypeToRemoveAnimal() {
-        return presenter.readEnclosureType("Enter enclosure type from which you wish to remove animal");
-    }
-    public EnclosureType requestEnclosureTypeToUpdateAnimal() {
-        return presenter.readEnclosureType("Enter enclosure type in which you wish to update animal");
+    public PropertyType requestPropertyType() {
+        return presenter.readPropertyType("Enter property that you want to change");
     }
 
     public void showUnknownCommandError() {
@@ -102,6 +102,15 @@ public class View implements AutoCloseable {
         presenter.printSuccess("Animal with id: " + id + " successfully removed from zoo");
     }
     public void showRemoveIdNotFoundError(int id) {
+        presenter.printError("Animal with id: " + id + " not found");
+    }
+    public void showUnexpectedError(String command) {
+        presenter.printError("Unexpected error occurred while processing command: " + command);
+    }
+    public void showUpdateSuccess(int id) {
+        presenter.printSuccess("Animal with id: " + id + " successfully updated");
+    }
+    public void showUpdateIdNotFoundError(int id) {
         presenter.printError("Animal with id: " + id + " not found");
     }
 

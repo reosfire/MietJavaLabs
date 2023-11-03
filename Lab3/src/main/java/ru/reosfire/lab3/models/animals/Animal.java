@@ -7,8 +7,8 @@ import java.time.Duration;
 public abstract class Animal {
     private static int createdCount = 0;
 
-    public final double Weight;
-    public final Duration LifeTime;
+    public double Weight;
+    public Duration LifeTime;
     public final int Id;
 
     public Animal(double weight, Duration lifeTime) {

@@ -29,7 +29,11 @@ public class Controller {
                 context.view.showUnknownCommandError();
                 continue;
             }
-            requestedCommand.execute(context);
+            try {
+                requestedCommand.execute(context);
+            } catch (Exception e) {
+                context.view.showUnexpectedError(requestedCommand.getId());
+            }
         }
     }
 

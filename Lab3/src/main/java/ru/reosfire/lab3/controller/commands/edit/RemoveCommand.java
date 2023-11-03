@@ -16,7 +16,7 @@ public class RemoveCommand implements Command {
 
     @Override
     public void execute(CommandContext context) {
-        int id = context.view.requestAnimalId();
+        int id = context.view.requestAnimalIdToRemove();
 
         try {
             context.getZoo().removeById(id);
