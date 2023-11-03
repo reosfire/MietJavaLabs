@@ -16,6 +16,13 @@ public class RemoveCommand implements Command {
 
     @Override
     public void execute(CommandContext context) {
+        int id = context.view.requestAnimalId();
 
+        try {
+            context.getZoo().removeById(id);
+            context.view.showRemoveSuccess(id);
+        } catch (Exception e) {
+            context.view.showRemoveIdNotFoundError(id);
+        }
     }
 }

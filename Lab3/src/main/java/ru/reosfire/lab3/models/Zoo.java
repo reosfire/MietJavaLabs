@@ -4,10 +4,7 @@ import ru.reosfire.lab3.models.animals.ColdBlooded;
 import ru.reosfire.lab3.models.animals.Feathered;
 import ru.reosfire.lab3.models.animals.Ungulate;
 import ru.reosfire.lab3.models.animals.Waterfowl;
-import ru.reosfire.lab3.models.enclosures.Aquarium;
-import ru.reosfire.lab3.models.enclosures.Covered;
-import ru.reosfire.lab3.models.enclosures.Opened;
-import ru.reosfire.lab3.models.enclosures.Terrarium;
+import ru.reosfire.lab3.models.enclosures.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,14 +53,25 @@ public class Zoo {
         return ungulate;
     }
 
+    public void removeById(int id) {
+        for (Enclosure<?> enclosure : getEnclosures()) {
+            try {
+                enclosure.removeById(id);
+                return;
+            } catch (Exception ignored) {
+
+            }
+        }
+        throw new RuntimeException("Animal with id: " + id + " not found");
+    }
+
     public void serializeToFile(File file) {
         try (FileOutputStream fileOutputStream = new FileOutputStream(file);
             OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream)
         ) {
-            terrarium.serialize(writer);
-            aquarium.serialize(writer);
-            covered.serialize(writer);
-            opened.serialize(writer);
+            for (Enclosure<?> enclosure : getEnclosures()) {
+                enclosure.serialize(writer);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Error while serializing Zoo", e);
         }
@@ -80,5 +88,14 @@ public class Zoo {
         } catch (Exception e) {
             throw new RuntimeException("Error while deserializing Zoo", e);
         }
+    }
+
+    private Enclosure<?>[] getEnclosures() {
+        return new Enclosure<?>[] {
+                terrarium,
+                aquarium,
+                covered,
+                opened,
+        };
     }
 }

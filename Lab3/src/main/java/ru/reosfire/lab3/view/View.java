@@ -59,6 +59,10 @@ public class View implements AutoCloseable {
         return Duration.ofDays(presenter.readInt("Enter animal lifetime days: "));
     }
 
+    public int requestAnimalId() {
+        return presenter.readInt("Enter id of animal to be removed: ");
+    }
+
     public String requestCommandId() {
         return presenter.readLine("Enter command from list above: ");
     }
@@ -93,6 +97,12 @@ public class View implements AutoCloseable {
     }
     public void showAddSuccess() {
         presenter.printSuccess("New animal successfully added to zoo");
+    }
+    public void showRemoveSuccess(int id) {
+        presenter.printSuccess("Animal with id: " + id + " successfully removed from zoo");
+    }
+    public void showRemoveIdNotFoundError(int id) {
+        presenter.printError("Animal with id: " + id + " not found");
     }
 
 

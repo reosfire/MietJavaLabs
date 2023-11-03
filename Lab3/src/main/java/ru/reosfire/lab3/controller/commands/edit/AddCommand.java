@@ -20,33 +20,23 @@ public class AddCommand implements Command {
     @Override
     public void execute(CommandContext context) {
         EnclosureType enclosureType = context.view.requestEnclosureTypeToAddAnimal();
+        double weight = context.view.requestWeight();
+        Duration lifetime = context.view.requestLifetime();
 
         switch (enclosureType) {
             case AQUARIUM: {
-                double weight = context.view.requestWeight();
-                Duration lifetime = context.view.requestLifetime();
-
                 context.getZoo().createWaterfowl(weight, lifetime);
                 break;
             }
             case COVERED: {
-                double weight = context.view.requestWeight();
-                Duration lifetime = context.view.requestLifetime();
-
                 context.getZoo().createFeathered(weight, lifetime);
                 break;
             }
             case OPENED: {
-                double weight = context.view.requestWeight();
-                Duration lifetime = context.view.requestLifetime();
-
                 context.getZoo().createUngulate(weight, lifetime);
                 break;
             }
             case TERRARIUM: {
-                double weight = context.view.requestWeight();
-                Duration lifetime = context.view.requestLifetime();
-
                 context.getZoo().createColdBlooded(weight, lifetime);
                 break;
             }
