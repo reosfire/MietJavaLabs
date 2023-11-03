@@ -16,6 +16,6 @@ public class AutotestsCommand implements Command {
 
     @Override
     public void execute(CommandContext context) {
-
+        context.view.showSerializationError();
     }
 }

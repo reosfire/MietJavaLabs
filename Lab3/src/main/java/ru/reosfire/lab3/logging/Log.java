@@ -6,9 +6,13 @@ import java.time.format.DateTimeFormatter;
 public class Log {
     private static Logger logger = null;
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    private static int logLevel = 0; // 0 nothing, 1 critical errors, 2 errors, 3 warnings, 4 info
 
-    public static void init(String path) {
+    public static void init(String path, int logLevel) {
         disposeCurrent();
+
+        Log.logLevel = logLevel;
+
         try {
             logger = new Logger(path);
             i("");
@@ -35,8 +39,8 @@ public class Log {
         logger.println(info);
     }
 
-    public static void e(Object info) {
-        e(info.toString());
+    public static void e(Object error) {
+        e(error.toString());
     }
     public static void e(String error) {
         assertLoggerInitialized();

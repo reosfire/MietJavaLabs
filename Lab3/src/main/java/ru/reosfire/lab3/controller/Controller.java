@@ -1,6 +1,7 @@
 package ru.reosfire.lab3.controller;
 
 import ru.reosfire.lab3.controller.commands.Command;
+import ru.reosfire.lab3.controller.commands.system.AutotestsCommand;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +20,10 @@ public class Controller {
     }
 
     public void startLooping() {
-        context.view.printProgramWelcomeFor(context.config.getUser());
+        beforeLoopInitiated();
 
         while (!context.isInterrupted()) {
-            context.view.printCommandsList(commandsList);
+            context.view.showCommandsList(commandsList);
             Command requestedCommand = commandsMap.get(context.view.requestCommandId());
 
             if (requestedCommand == null) {
@@ -34,6 +35,15 @@ public class Controller {
             } catch (Exception e) {
                 context.view.showUnexpectedError(requestedCommand.getId());
             }
+        }
+    }
+
+    private void beforeLoopInitiated() {
+        context.view.showProgramWelcomeFor(context.config.getUser());
+
+        if (context.config.isDebugMode()) {
+            context.view.showAutotestsHeader();
+            new AutotestsCommand().execute(context);
         }
     }
 

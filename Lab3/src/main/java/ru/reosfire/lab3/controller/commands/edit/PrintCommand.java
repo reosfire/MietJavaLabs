@@ -18,6 +18,6 @@ public class PrintCommand implements Command {
     @Override
     public void execute(CommandContext context) {
         Zoo zoo = context.getZoo();
-        context.view.printZoo(zoo);
+        context.view.showZoo(zoo);
     }
 }

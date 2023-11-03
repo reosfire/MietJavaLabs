@@ -10,9 +10,10 @@ import ru.reosfire.lab3.logging.Log;
 
 public class Main {
     public static void main(String[] args) {
-        Log.init("./Log.txt");
-
         Config config = new ConfigBasedOnProperties("custom.props");
+
+        Log.init("./Log.txt", config.isDebugMode() ? 4 : 2);
+
         AuthorityVerifier authorityVerifier = new AuthorityVerifierByConfig(config);
 
         ControllerFactory controllerFactory = new ControllerFactory(config, authorityVerifier);

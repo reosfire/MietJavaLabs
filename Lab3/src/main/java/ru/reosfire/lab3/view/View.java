@@ -13,7 +13,7 @@ public class View implements AutoCloseable {
 
     private final ConsolePresenter presenter = new ConsolePresenter();
 
-    public void printZoo(Zoo zoo) {
+    public void showZoo(Zoo zoo) {
         presenter.printHeader(" ZOO ");
 
         presenter.printLine("Terrarium:");
@@ -29,7 +29,7 @@ public class View implements AutoCloseable {
         presenter.printBlock(zoo.opened.toString(), 1);
     }
 
-    public void printCommandsList(List<Command> commands) {
+    public void showCommandsList(List<Command> commands) {
         presenter.printLine();
         for (Command command : commands) {
             String name = command.getName();
@@ -39,9 +39,13 @@ public class View implements AutoCloseable {
         }
     }
 
-    public void printProgramWelcomeFor(User user) {
+    public void showProgramWelcomeFor(User user) {
         presenter.printLine();
         presenter.printSuccess("Welcome " + user.getLogin() + "! Your group is: " + user.getGroup().name());
+    }
+
+    public void showAutotestsHeader() {
+        presenter.printHeader("AUTOTESTS");
     }
 
     public Credentials requestCredentials() {
