@@ -27,6 +27,10 @@ public class Graph {
         return color;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
     public int size() {
         return xs.length;
     }
