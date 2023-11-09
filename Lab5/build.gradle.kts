@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-group = "ru.reosfire.lab4"
+group = "ru.reosfire.lab5"
 version = "1.0"
 
 repositories {
@@ -19,6 +19,6 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<Jar> {
     manifest {
-        attributes["Main-Class"] = "ru.reosfire.lab4.Main"
+        attributes["Main-Class"] = "ru.reosfire.lab5.Main"
     }
 }
