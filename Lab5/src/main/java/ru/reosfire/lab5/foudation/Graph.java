@@ -55,4 +55,16 @@ public class Graph {
         if (!min.isPresent()) throw new RuntimeException("empty xs array?");
         return min.getAsDouble();
     }
+
+    public Graph toLogScaled() {
+        double[] newXs = new double[size()];
+        double[] newYs = new double[ys.length];
+
+        for (int i = 0; i < size(); i++) {
+            newXs[i] = xs[i];
+            newYs[i] = Math.signum(ys[i]) * Math.log10(1 + Math.abs(ys[i] * Math.log(10)));
+        }
+
+        return new Graph(newXs, newYs, color, label);
+    }
 }

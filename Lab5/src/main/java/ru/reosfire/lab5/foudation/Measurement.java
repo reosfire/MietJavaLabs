@@ -46,18 +46,18 @@ public class Measurement {
     }
 
     private double[] getGrid(double step) {
-        double[] result = new double[18];
+        double[] result = new double[78];
 
         int k = 0;
 
         double curr = 0;
-        for (int i = 0; i < 9; i++, k++) {
+        for (int i = 0; i < 39; i++, k++) {
             curr += step;
             result[k] = curr;
         }
 
         curr = 0;
-        for (int i = 0; i < 9; i++, k++) {
+        for (int i = 0; i < 39; i++, k++) {
             curr -= step;
             result[k] = curr;
         }
@@ -66,6 +66,6 @@ public class Measurement {
     }
 
     private double getGridStep(double fraction) {
-        return Math.pow(10, Math.ceil(Math.log10(fraction)) - 1);
+        return Math.pow(10, Math.round(Math.log10(fraction)) - 1);
     }
 }

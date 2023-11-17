@@ -76,14 +76,14 @@ public class Plotter extends JComponent {
         for (double x : measurement.getHorizontalGrid()) {
             drawVerticalLine(canvas, x, measurement);
 
-            String label = Double.toString(x);
+            String label = String.format("%.3f", x);
             canvas.drawString(label, measurement.xToPx(x) + 5, measurement.yToPx(0) + FONT_SIZE);
         }
 
         for (double y : measurement.getVerticalGrid()) {
             drawHorizontalLine(canvas, y, measurement);
 
-            String label = Double.toString(y);
+            String label = String.format("%.3f", y);
             canvas.drawString(label, measurement.xToPx(0) + 5, measurement.yToPx(y) - 5);
         }
 
@@ -139,8 +139,8 @@ public class Plotter extends JComponent {
             Point curr = graph.get(i);
             int x1 = measurement.xToPx(prev.x);
             int y1 = measurement.yToPx(prev.y);
-            int x2 = measurement.xToPx(prev.x);
-            int y2 = measurement.yToPx(prev.y);
+            int x2 = measurement.xToPx(curr.x);
+            int y2 = measurement.yToPx(curr.y);
 
             canvas.drawLine(x1, y1, x2, y2);
 
