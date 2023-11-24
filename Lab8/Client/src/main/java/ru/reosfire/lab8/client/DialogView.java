@@ -6,18 +6,27 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DialogView extends JComponent {
     private static final int FONT_SIZE = 20;
-    private static final Font FONT = new Font("TimesRoman", Font.PLAIN, FONT_SIZE);
+    private static final Font MESSAGE_FONT = new Font("TimesRoman", Font.PLAIN, FONT_SIZE);
+    private static final Font SENDER_FONT = new Font("TimesRoman", Font.BOLD, FONT_SIZE);
     private static final Color MESSAGE_BACKGROUND_COLOR = new Color(0, 136, 204);
 
+    private volatile double upperScrollBound = 0;
     private volatile double scroll = 0;
     private final Object scrollLock = new Object();
 
-    public DialogView() {
+    private List<Message> messages = new ArrayList<>();
+    private String senderName;
+
+    public DialogView(String senderName) {
+        this.senderName = senderName;
+
         addMouseWheelListener((it) -> {
             AtomicReference<Double> scrollAmount = new AtomicReference<>(it.getPreciseWheelRotation() * 100);
             double delta = scrollAmount.get() / 20;
@@ -27,7 +36,9 @@ public class DialogView extends JComponent {
                     scrollAmount.updateAndGet(v -> v - delta);
 
                     synchronized (scrollLock) {
-                        scroll += delta;
+                        scroll -= delta;
+                        scroll = Math.min(scroll, upperScrollBound);
+                        scroll = Math.max(scroll, 0);
                     }
 
                     repaint();
@@ -43,30 +54,54 @@ public class DialogView extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        if (!(g instanceof Graphics2D)) throw new RuntimeException("graphics is not graphics2d");
-        Graphics2D canvas = (Graphics2D) g;
-        configureCanvas(canvas);
-        canvas.setFont(FONT);
+        try {
+            if (!(g instanceof Graphics2D)) throw new RuntimeException("graphics is not graphics2d");
+            Graphics2D canvas = (Graphics2D) g;
+            configureCanvas(canvas);
+            canvas.setFont(MESSAGE_FONT);
 
-        synchronized (scrollLock) {
-            int prev = drawRightMessage(canvas, "asdfasdfasdfasdfasdfasdfasdfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", toInt(getHeight() - 10 + scroll));
-            prev = drawRightMessage(canvas, "asdfasdfasdfasdfasdfasdfasdfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev - 10);
-            drawLeftMessage(canvas, "asdfasdfasdfasdfasdfasdfasdfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev - 10);
+            double scroll;
+            synchronized (scrollLock) {
+                scroll = this.scroll;
+                scroll = Math.min(scroll, upperScrollBound);
+                scroll = Math.max(scroll, 0);
+            }
+
+            int prev = toInt(getHeight() - 10 + scroll);
+            for (int i = messages.size() - 1; i >= 0; i--) {
+                Message message = messages.get(i);
+                if (senderName.equals(message.senderName)) {
+                    prev = drawRightMessage(canvas, message, prev - 10);
+                } else {
+                    prev = drawLeftMessage(canvas, message, prev - 10);
+                }
+            }
+
+            synchronized (scrollLock) {
+                upperScrollBound = scroll - prev + 10;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
+    public void setContent(List<Message> messages) {
+        this.messages = messages;
+        repaint();
+    }
 
-
-    private int drawRightMessage(Graphics2D canvas, String text, int y) {
+    private int drawRightMessage(Graphics2D canvas, Message message, int y) {
         int maxWidth = getWidth() * 3 / 4;
-        Rectangle2D labelBounds = new TextLayout(text, FONT, canvas.getFontRenderContext()).getBounds();
+        Rectangle2D labelBounds = new TextLayout(message.content, MESSAGE_FONT, canvas.getFontRenderContext()).getBounds();
 
-        List<String> messageLines = getStrings(canvas.getFontRenderContext(), text, maxWidth);
+        List<String> senderLines = getStrings(canvas.getFontRenderContext(), SENDER_FONT, message.senderName, maxWidth);
+        List<String> messageLines = getStrings(canvas.getFontRenderContext(), MESSAGE_FONT, message.content, maxWidth);
 
         int lineHeight = (int)(labelBounds.getHeight() + 20);
 
-        int width = getMaxLineWidth(canvas.getFontRenderContext(), messageLines) + 20;
-        int height = messageLines.size() * lineHeight;
+        int width = Math.max(getMaxLineWidth(canvas.getFontRenderContext(), SENDER_FONT, senderLines),
+                getMaxLineWidth(canvas.getFontRenderContext(), MESSAGE_FONT, messageLines)) + 20;
+        int height = (senderLines.size() + messageLines.size()) * lineHeight + 5;
 
         int upperCornerY = y - height;
 
@@ -87,27 +122,37 @@ public class DialogView extends JComponent {
 
 
         //draw lines
-        canvas.setColor(Color.WHITE);
+        canvas.setColor(new Color(210, 210, 210));
+        canvas.setFont(SENDER_FONT);
 
-        int firstLineY = upperCornerY + 25;
-        for (int i = 0; i < messageLines.size(); i++) {
-            canvas.drawString(messageLines.get(i), getWidth() - width, firstLineY + i * lineHeight);
+        int lineY = upperCornerY + 25;
+        for (int i = 0; i < senderLines.size(); i++) {
+            canvas.drawString(senderLines.get(i), getWidth() - width, lineY);
+            lineY += lineHeight;
         }
 
-        //need to return some measurements results to understand from outside where to place next message
+        canvas.setColor(Color.WHITE);
+        canvas.setFont(MESSAGE_FONT);
+        for (int i = 0; i < messageLines.size(); i++) {
+            canvas.drawString(messageLines.get(i), getWidth() - width, lineY);
+            lineY += lineHeight;
+        }
+
         return upperCornerY;
     }
 
-    private int drawLeftMessage(Graphics2D canvas, String text, int y) {
+    private int drawLeftMessage(Graphics2D canvas, Message message, int y) {
         int maxWidth = getWidth() * 3 / 4;
-        Rectangle2D labelBounds = new TextLayout(text, FONT, canvas.getFontRenderContext()).getBounds();
+        Rectangle2D labelBounds = new TextLayout(message.content, MESSAGE_FONT, canvas.getFontRenderContext()).getBounds();
 
-        List<String> messageLines = getStrings(canvas.getFontRenderContext(), text, maxWidth);
+        List<String> senderLines = getStrings(canvas.getFontRenderContext(), SENDER_FONT, message.senderName, maxWidth);
+        List<String> messageLines = getStrings(canvas.getFontRenderContext(), MESSAGE_FONT, message.content, maxWidth);
 
         int lineHeight = (int)(labelBounds.getHeight() + 20);
 
-        int width = getMaxLineWidth(canvas.getFontRenderContext(), messageLines) + 20;
-        int height = messageLines.size() * lineHeight;
+        int width = Math.max(getMaxLineWidth(canvas.getFontRenderContext(), SENDER_FONT, senderLines),
+                getMaxLineWidth(canvas.getFontRenderContext(), MESSAGE_FONT, messageLines)) + 20;
+        int height = (senderLines.size() + messageLines.size()) * lineHeight + 5;
 
         int upperCornerY = y - height;
 
@@ -128,25 +173,38 @@ public class DialogView extends JComponent {
 
 
         //draw lines
-        canvas.setColor(Color.WHITE);
+        canvas.setColor(new Color(210, 210, 210));
+        canvas.setFont(SENDER_FONT);
 
-        int firstLineY = upperCornerY + 25;
-        for (int i = 0; i < messageLines.size(); i++) {
-            canvas.drawString(messageLines.get(i), 20, firstLineY + i * lineHeight);
+        int lineY = upperCornerY + 25;
+        for (int i = 0; i < senderLines.size(); i++) {
+            canvas.drawString(senderLines.get(i), 20, lineY);
+            lineY += lineHeight;
         }
 
-        //need to return some measurements results to understand from outside where to place next message
+        canvas.setColor(Color.WHITE);
+        canvas.setFont(MESSAGE_FONT);
+        for (int i = 0; i < messageLines.size(); i++) {
+            canvas.drawString(messageLines.get(i), 20, lineY);
+            lineY += lineHeight;
+        }
+
         return upperCornerY;
     }
 
-    private static List<String> getStrings(FontRenderContext context, String text, int maxWidth) {
+    private static final Map<String, List<String>> cache = new HashMap<>();
+    private static List<String> getStrings(FontRenderContext context, Font font, String text, int maxWidth) {
+        List<String> cached = cache.get(text + maxWidth);
+        if (cached != null) return cached;
+
+
         List<String> messageLines = new ArrayList<>();
         String current = "";
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             String next = current + c;
 
-            Rectangle2D nextBounds = new TextLayout(next, FONT, context).getBounds();
+            Rectangle2D nextBounds = new TextLayout(next, font, context).getBounds();
             if (nextBounds.getWidth() + 20 > maxWidth) {
                 messageLines.add(current);
                 current = "";
@@ -155,13 +213,15 @@ public class DialogView extends JComponent {
         }
 
         if (!current.isEmpty()) messageLines.add(current);
+
+        cache.put(text + maxWidth, messageLines);
         return messageLines;
     }
 
-    private static int getMaxLineWidth(FontRenderContext context, List<String> lines) {
+    private static int getMaxLineWidth(FontRenderContext context, Font font, List<String> lines) {
         int width = 0;
         for (String messageLine : lines) {
-            Rectangle2D lineBounds = new TextLayout(messageLine, FONT, context).getBounds();
+            Rectangle2D lineBounds = new TextLayout(messageLine, font, context).getBounds();
             width = Math.max(width, toInt(lineBounds.getWidth()));
         }
 

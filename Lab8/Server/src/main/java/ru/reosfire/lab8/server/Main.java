@@ -15,9 +15,9 @@ public class Main {
     private static final List<Socket> activeClients = new CopyOnWriteArrayList<>();
 
     public static void main(String[] args) {
-        for (int i = 0; i < 100; i++) {
-            messagesHistory.add(new Message("counter", Integer.toString(i)));
-        }
+//        for (int i = 0; i < 100; i++) {
+//            messagesHistory.add(new Message("counter", Integer.toString(i)));
+//        }
         messagesHistory.add(new Message("reosfire", "Привет мир!"));
         messagesHistory.add(new Message("reosfire", "Привет мир!"));
         messagesHistory.add(new Message("reosfire", "Hello world!"));
@@ -62,7 +62,8 @@ public class Main {
                 try {
                     BufferedInputStream input = new BufferedInputStream(acceptedSocket.getInputStream());
                     Message message = Message.receive(input);
-                    messagesHistory.add(message);
+                    if (!message.content.trim().isEmpty())
+                        messagesHistory.add(message);
 
                     broadcastMessage(message);
 
