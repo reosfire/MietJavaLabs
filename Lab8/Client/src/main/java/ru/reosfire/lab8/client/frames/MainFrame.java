@@ -1,5 +1,6 @@
 package ru.reosfire.lab8.client.frames;
 
+import ru.reosfire.lab8.client.DialogView;
 import ru.reosfire.lab8.client.Message;
 
 import javax.swing.*;
@@ -25,7 +26,8 @@ public class MainFrame extends JFrame {
         BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
 
 
-        for (Message message : getMessagesHistory(input)) {
+        List<Message> messagesHistory = getMessagesHistory(input);
+        for (Message message : messagesHistory) {
             System.out.println(message);
         }
 
@@ -54,9 +56,9 @@ public class MainFrame extends JFrame {
             }
         }).start();
 
-        getRootPane().setBackground(Color.CYAN);
         setSize(WIDTH, HEIGHT);
-        setLayout(null);
+
+        add(new DialogView());
     }
 
     private List<Message> getMessagesHistory(BufferedInputStream stream) throws IOException {

@@ -9,15 +9,15 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
-            MainFrame frame = null;
             try {
-                frame = new MainFrame();
+                MainFrame frame = new MainFrame();
+
+                frame.setTitle("Messenger");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            frame.setTitle("Raises");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
         });
     }
 }
