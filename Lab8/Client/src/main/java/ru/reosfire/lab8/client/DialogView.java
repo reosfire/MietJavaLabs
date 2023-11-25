@@ -24,9 +24,7 @@ public class DialogView extends JComponent {
     private List<Message> messages = new ArrayList<>();
     private String senderName;
 
-    public DialogView(String senderName) {
-        this.senderName = senderName;
-
+    public DialogView() {
         addMouseWheelListener((it) -> {
             AtomicReference<Double> scrollAmount = new AtomicReference<>(it.getPreciseWheelRotation() * 100);
             double delta = scrollAmount.get() / 20;
@@ -85,6 +83,12 @@ public class DialogView extends JComponent {
         }
     }
 
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+    public String getSenderName() {
+        return senderName;
+    }
     public void setContent(List<Message> messages) {
         this.messages = messages;
         repaint();

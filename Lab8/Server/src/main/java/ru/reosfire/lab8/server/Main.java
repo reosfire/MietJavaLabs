@@ -15,17 +15,8 @@ public class Main {
     private static final List<Socket> activeClients = new CopyOnWriteArrayList<>();
 
     public static void main(String[] args) {
-//        for (int i = 0; i < 100; i++) {
-//            messagesHistory.add(new Message("counter", Integer.toString(i)));
-//        }
-        messagesHistory.add(new Message("reosfire", "Привет мир!"));
-        messagesHistory.add(new Message("reosfire", "Привет мир!"));
-        messagesHistory.add(new Message("reosfire", "Hello world!"));
-        messagesHistory.add(new Message("reosfire", "Привет мир!"));
-        messagesHistory.add(new Message("reosfire", "Привет мир! Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!Привет мир!"));
-
         try (ServerSocket serverSocket = new ServerSocket()) {
-            serverSocket.bind(new InetSocketAddress("127.0.0.1", 25565));
+            serverSocket.bind(new InetSocketAddress("192.168.1.71", 25565));
 
             while (true) {
                 acceptNext(serverSocket);

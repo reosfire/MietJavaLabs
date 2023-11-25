@@ -5,6 +5,9 @@ import ru.reosfire.lab8.client.Message;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -21,26 +24,17 @@ public class MainFrame extends JFrame {
 
     private final static int HEIGHT = 1080;
     private final static int WIDTH = 1920;
-    private final Socket socket = new Socket();
-    private final BufferedInputStream input;
-    private final BufferedOutputStream output;
+    private BufferedInputStream input;
+    private BufferedOutputStream output;
 
-    private final String senderName = "reosfire";
+    DialogView dialogView = new DialogView();
+    List<Message> messagesHistory;
+
+    ConnectionData defaultConnectionData = new ConnectionData("127.0.0.1:25565", "reosfire");
 
     public MainFrame() throws HeadlessException, IOException {
-        socket.connect(new InetSocketAddress("127.0.0.1", 25565));
+        reconnect();
 
-        input = new BufferedInputStream(socket.getInputStream());
-        output = new BufferedOutputStream(socket.getOutputStream());
-
-
-        List<Message> messagesHistory = getMessagesHistory(input);
-        for (Message message : messagesHistory) {
-            System.out.println(message);
-        }
-
-        DialogView dialogView = new DialogView(senderName);
-        dialogView.setContent(messagesHistory);
         new Thread(() -> {
             while (true) {
                 try {
@@ -50,7 +44,7 @@ public class MainFrame extends JFrame {
 
                     dialogView.setContent(messagesHistory);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    reconnect();
                 }
             }
         }).start();
@@ -74,6 +68,37 @@ public class MainFrame extends JFrame {
         add(mainPanel);
     }
 
+    private void reconnect() {
+        while (true) {
+            try {
+                if (input != null) input.close();
+                if (output != null) output.close();
+
+                ConnectionData connectionData = makeConnectionDataDialog(defaultConnectionData);
+                defaultConnectionData = connectionData;
+
+                Socket socket = new Socket();
+
+                socket.connect(new InetSocketAddress(connectionData.getIP(), connectionData.getPort()));
+                dialogView.setSenderName(connectionData.login);
+
+                input = new BufferedInputStream(socket.getInputStream());
+                output = new BufferedOutputStream(socket.getOutputStream());
+
+                messagesHistory = getMessagesHistory(input);
+                for (Message message : messagesHistory) {
+                    System.out.println(message);
+                }
+                dialogView.setContent(messagesHistory);
+
+                return;
+            } catch (Exception e) {
+                System.out.println(e);
+                makeDialog("Error", "Unable to connect to host. " + e.getMessage());
+            }
+        }
+    }
+
     private JPanel messageSendingPanel() {
         JPanel messageSendPanel = new JPanel();
         messageSendPanel.setLayout(new GridBagLayout());
@@ -91,29 +116,20 @@ public class MainFrame extends JFrame {
         JButton sendButton = createSendButton();
         messageSendPanel.add(sendButton, gridBagConstraints);
 
-        sendButton.addActionListener(it -> {
+        ActionListener messageSendAction = it -> {
             String message = sendTextField.getText();
             if (message.trim().isEmpty()) return;
             try {
-                new Message(senderName, message).send(output);
+                new Message(dialogView.getSenderName(), message).send(output);
                 output.flush();
                 sendTextField.setText("");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        });
+        };
 
-        sendTextField.addActionListener(it -> {
-            String message = sendTextField.getText();
-            if (message.trim().isEmpty()) return;
-            try {
-                new Message(senderName, message).send(output);
-                output.flush();
-                sendTextField.setText("");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        sendButton.addActionListener(messageSendAction);
+        sendTextField.addActionListener(messageSendAction);
 
         return messageSendPanel;
     }
@@ -148,20 +164,126 @@ public class MainFrame extends JFrame {
     }
 
 
+    private ConnectionData makeConnectionDataDialog(ConnectionData def) {
+        JDialog dialog = new JDialog(this, "Connection Data", true);
+        dialog.setLayout(new GridBagLayout());
 
-    private void makeDialog(String title, String content) {
-        Dialog dialog = new Dialog(this, title, true);
-        dialog.setLayout(new FlowLayout());
+        JPanel fieldsPanel = new JPanel();
+        fieldsPanel.setLayout(new GridBagLayout());
 
-        Label label = new Label(content);
-        label.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-        dialog.add(label);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weightx = 0;
 
-        Button restart = new Button("OK");
-        restart.addActionListener(it -> dialog.setVisible(false));
-        dialog.add(restart);
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        JLabel hostLabel = new JLabel("Host: ");
+        hostLabel.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+        fieldsPanel.add(hostLabel, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        JLabel loginLabel = new JLabel("Login: ");
+        loginLabel.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+        fieldsPanel.add(loginLabel, constraints);
+
+        constraints.weightx = 1;
+
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        JTextField hostField = new JTextField();
+        hostField.setText(def.host);
+        hostField.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+        fieldsPanel.add(hostField, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        JTextField loginField = new JTextField();
+        loginField.setText(def.login);
+        loginField.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+        fieldsPanel.add(loginField, constraints);
+
+
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        dialog.add(fieldsPanel, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        JButton confirmButton = new JButton("Confirm");
+        confirmButton.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+        dialog.add(confirmButton, constraints);
+
+        ActionListener closeAndReturnAction = it -> {
+            System.out.println("fffffffffffffff");
+            if (hostField.getText().trim().isEmpty()) return;
+            if (loginField.getText().trim().isEmpty()) return;
+            dialog.setVisible(false);
+        };
+
+        confirmButton.addActionListener(closeAndReturnAction);
+        hostField.addActionListener(closeAndReturnAction);
+        loginField.addActionListener(closeAndReturnAction);
 
         dialog.setSize(350, 150);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        dialog.addWindowListener(new WindowCloser());
         dialog.setVisible(true);
+
+        return new ConnectionData(hostField.getText(), loginField.getText());
+    }
+
+    private void makeDialog(String title, String content) {
+        JDialog dialog = new JDialog(this, title, true);
+        dialog.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.weightx = 1;
+        constraints.gridx = 0;
+
+        constraints.gridy = 0;
+        JLabel label = new JLabel(content);
+        label.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+        dialog.add(label, constraints);
+
+        constraints.gridy = 1;
+        JButton ok = new JButton("OK");
+        ok.addActionListener(it -> dialog.setVisible(false));
+        dialog.add(ok, constraints);
+
+        dialog.setSize(label.getPreferredSize().width + 40, 150);
+        dialog.setVisible(true);
+    }
+
+
+    private static class WindowCloser implements WindowListener {
+        @Override
+        public void windowOpened(WindowEvent e) {
+        }
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            System.exit(0);
+        }
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+        }
+
+        @Override
+        public void windowIconified(WindowEvent e) {
+        }
+
+        @Override
+        public void windowDeiconified(WindowEvent e) {
+        }
+
+        @Override
+        public void windowActivated(WindowEvent e) {
+        }
+
+        @Override
+        public void windowDeactivated(WindowEvent e) {
+        }
     }
 }
