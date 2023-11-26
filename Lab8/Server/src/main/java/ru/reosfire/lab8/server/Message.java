@@ -3,7 +3,6 @@ package ru.reosfire.lab8.server;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +18,7 @@ public class Message {
         this.content = content;
     }
 
-    public byte[] toBytes() throws UnsupportedEncodingException {
+    public byte[] toBytes() {
         byte[] nameBytes = toBytes(senderName);
         byte[] contentBytes = toBytes(content);
 
@@ -76,7 +75,7 @@ public class Message {
         return fromBytes(messageBytes);
     }
 
-    private static byte[] toBytes(String string) throws UnsupportedEncodingException {
+    private static byte[] toBytes(String string) {
         byte[] bytes = string.getBytes(charset);
         ByteBuffer buffer = ByteBuffer.allocate(4 + bytes.length);
 
