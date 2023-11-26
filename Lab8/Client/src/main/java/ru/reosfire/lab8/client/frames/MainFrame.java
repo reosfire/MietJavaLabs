@@ -93,7 +93,6 @@ public class MainFrame extends JFrame {
 
                 return;
             } catch (Exception e) {
-                System.out.println(e);
                 makeDialog("Error", "Unable to connect to host. " + e.getMessage());
             }
         }

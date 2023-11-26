@@ -32,7 +32,6 @@ public class MainFrame extends JFrame {
         getRootPane().addComponentListener(new ComponentAdapter()
         {
             public void componentResized(ComponentEvent evt) {
-                Component c = (Component)evt.getSource();
                 restartButton.setBounds(getWidth() / 2 - 100, getHeight() - 100, 200, 50);
             }
         });

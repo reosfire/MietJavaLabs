@@ -130,15 +130,15 @@ public class DialogView extends JComponent {
         canvas.setFont(SENDER_FONT);
 
         int lineY = upperCornerY + 25;
-        for (int i = 0; i < senderLines.size(); i++) {
-            canvas.drawString(senderLines.get(i), getWidth() - width, lineY);
+        for (String senderLine : senderLines) {
+            canvas.drawString(senderLine, getWidth() - width, lineY);
             lineY += lineHeight;
         }
 
         canvas.setColor(Color.WHITE);
         canvas.setFont(MESSAGE_FONT);
-        for (int i = 0; i < messageLines.size(); i++) {
-            canvas.drawString(messageLines.get(i), getWidth() - width, lineY);
+        for (String messageLine : messageLines) {
+            canvas.drawString(messageLine, getWidth() - width, lineY);
             lineY += lineHeight;
         }
 
@@ -181,15 +181,15 @@ public class DialogView extends JComponent {
         canvas.setFont(SENDER_FONT);
 
         int lineY = upperCornerY + 25;
-        for (int i = 0; i < senderLines.size(); i++) {
-            canvas.drawString(senderLines.get(i), 20, lineY);
+        for (String senderLine : senderLines) {
+            canvas.drawString(senderLine, 20, lineY);
             lineY += lineHeight;
         }
 
         canvas.setColor(Color.WHITE);
         canvas.setFont(MESSAGE_FONT);
-        for (int i = 0; i < messageLines.size(); i++) {
-            canvas.drawString(messageLines.get(i), 20, lineY);
+        for (String messageLine : messageLines) {
+            canvas.drawString(messageLine, 20, lineY);
             lineY += lineHeight;
         }
 
@@ -233,10 +233,7 @@ public class DialogView extends JComponent {
     }
 
     private static int toInt(double value) {
-        return (int)Math.round(value);
-    }
-    private static int toInt(float value) {
-        return Math.round(value);
+        return (int) Math.round(value);
     }
 
     private static void configureCanvas(Graphics2D canvas) {
