@@ -5,10 +5,15 @@ public class Edge {
     public final Atom end;
     public int weight;
 
-    public Edge(Atom start, Atom end) {
+
+    public Edge(Atom start, Atom end, int weight) {
         this.start = start;
         this.end = end;
-        this.weight = 1;
+        this.weight = weight;
+    }
+
+    public Edge(Atom start, Atom end) {
+        this(start, end, 1);
     }
 
     public boolean isSameAs(Edge other) {

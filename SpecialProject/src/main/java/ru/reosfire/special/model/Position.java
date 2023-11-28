@@ -27,10 +27,6 @@ public class Position {
         return new Position(this.x * factor, this.y * factor);
     }
 
-    public Position times(int factor) {
-        return new Position(this.x * factor, this.y * factor);
-    }
-
     public double magnitude() {
         return x*x + y*y;
     }

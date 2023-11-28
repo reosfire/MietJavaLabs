@@ -9,8 +9,8 @@ public class RoundAtom extends Atom {
     private final Color color;
     private final int radius;
 
-    public RoundAtom(Position position, Color color, int radius) {
-        super(position);
+    public RoundAtom(Position position, Color color, int radius, AtomType type) {
+        super(position, type);
         this.color = color;
         this.radius = radius;
     }

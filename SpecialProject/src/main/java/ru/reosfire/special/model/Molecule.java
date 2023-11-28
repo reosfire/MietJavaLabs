@@ -1,7 +1,11 @@
 package ru.reosfire.special.model;
 
+import ru.reosfire.special.model.atoms.AtomType;
+
 import java.awt.*;
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,11 +89,55 @@ public class Molecule {
     }
 
 
-    public void saveToFile(File file) {
+    public void saveTo(FileWriter writer) throws IOException {
+        writer.write(atoms.size() + "\n");
 
+        for (Atom atom : atoms) {
+            atom.serialize(writer);
+        }
+
+        writer.write(edges.size() + "\n");
+
+        for (Edge edge : edges) {
+            writer.write(indexOfAtom(edge.start) + " " + indexOfAtom(edge.end) + " " + edge.weight + "\n");
+        }
     }
 
-    public static Molecule readFromFile(File file) {
-        return new Molecule();
+    private int indexOfAtom(Atom atom) {
+        for (int i = 0; i < atoms.size(); i++) {
+            if (atoms.get(i) == atom) return i;
+        }
+        return -1;
+    }
+
+    public static Molecule readFrom(BufferedReader reader) throws IOException {
+        Molecule result = new Molecule();
+
+        int n = Integer.parseInt(reader.readLine());
+
+        for (int i = 0; i < n; i++) {
+            AtomType type = AtomType.valueOf(reader.readLine());
+
+            String[] positionLine = reader.readLine().split(" ");
+            double positionX = Double.parseDouble(positionLine[0]);
+            double positionY = Double.parseDouble(positionLine[1]);
+
+            Position position = new Position(positionX, positionY);
+
+            result.addAtom(AtomsFactory.create(type, position));
+        }
+
+        int m = Integer.parseInt(reader.readLine());
+
+        for (int i = 0; i < m; i++) {
+            String[] positionLine = reader.readLine().split(" ");
+            int start = Integer.parseInt(positionLine[0]);
+            int end = Integer.parseInt(positionLine[1]);
+            int weight = Integer.parseInt(positionLine[2]);
+
+            result.addEdge(new Edge(result.atoms.get(start), result.atoms.get(end), weight));
+        }
+
+        return result;
     }
 }

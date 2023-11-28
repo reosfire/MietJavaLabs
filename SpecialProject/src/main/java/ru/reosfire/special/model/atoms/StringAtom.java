@@ -12,8 +12,8 @@ public class StringAtom extends Atom {
     private final String label;
     private Rectangle2D lastBounds;
 
-    public StringAtom(Position position, String label) {
-        super(position);
+    public StringAtom(Position position, String label, AtomType type) {
+        super(position, type);
         this.label = label;
     }
 

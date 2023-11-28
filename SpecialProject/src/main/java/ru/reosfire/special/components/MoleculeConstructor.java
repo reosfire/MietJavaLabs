@@ -11,8 +11,10 @@ import ru.reosfire.special.model.atoms.AtomType;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MoleculeConstructor extends JComponent {
@@ -27,37 +29,7 @@ public class MoleculeConstructor extends JComponent {
     private volatile double factor = 1;
     private final Object scrollLock = new Object();
 
-    private final AtomsFactory atomsFactory = new AtomsFactory();
-
-    @Deprecated()
-    public void initState() {
-        for (int i = 0; i < 20; i++) {
-            state.atoms.add(atomsFactory.create(AtomType.H, randomPosition()));
-        }
-        for (int i = 0; i < 20; i++) {
-            state.atoms.add(atomsFactory.create(AtomType.N, randomPosition()));
-        }
-        for (int i = 0; i < 20; i++) {
-            state.atoms.add(atomsFactory.create(AtomType.C, randomPosition()));
-        }
-        for (int i = 0; i < 20; i++) {
-            state.atoms.add(atomsFactory.create(AtomType.O, randomPosition()));
-        }
-        for (int i = 0; i < 20; i++) {
-            state.atoms.add(atomsFactory.create(AtomType.R, randomPosition()));
-        }
-
-        for (int i = 0; i < 500; i++) {
-            int i1 = ThreadLocalRandom.current().nextInt(100);
-            int i2 = ThreadLocalRandom.current().nextInt(100);
-            if (i1 == i2) continue;
-            state.addEdge(state.atoms.get(i1), state.atoms.get(i2));
-        }
-    }
-
     public MoleculeConstructor() {
-        initState();
-
         final Atom[] movingAtom = { null };
         final Position[] activeAtomShift = { null };
         final int[] dragged = { 0 };
@@ -68,7 +40,7 @@ public class MoleculeConstructor extends JComponent {
 
                 if (intersectMenu(position)) {
                     int menuIndex = getMenuIndex(position);
-                    freeAtom = atomsFactory.create(AtomType.values()[menuIndex], position);
+                    freeAtom = AtomsFactory.create(AtomType.values()[menuIndex], position);
                 } else {
                     dragged[0] = 0;
 
@@ -170,8 +142,25 @@ public class MoleculeConstructor extends JComponent {
         }, KeyStroke.getKeyStroke("DELETE"), WHEN_IN_FOCUSED_WINDOW);
     }
 
-    public void setState(Molecule molecule) {
-        state = molecule;
+    public void saveToFile(File saveFile) {
+        try (FileWriter fileWriter = new FileWriter(saveFile)) {
+            state.saveTo(fileWriter);
+
+            fileWriter.write(factor + "\n");
+        } catch (Exception e) {
+            throw new RuntimeException("Error while saving to file", e);
+        }
+    }
+
+    public void restoreFromFile(File file) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            state = Molecule.readFrom(bufferedReader);
+
+            factor = Double.parseDouble(bufferedReader.readLine());
+        } catch (Exception e) {
+            throw new RuntimeException("Error while reading from file", e);
+        }
+
         repaint();
     }
 
@@ -201,7 +190,7 @@ public class MoleculeConstructor extends JComponent {
         AtomType[] atomTypes = AtomType.values();
 
         for (int i = 0; i < atomTypes.length; i++) {
-            Atom atom = atomsFactory.create(atomTypes[i], new Position(getWidth() - MENU_WIDTH + 60, currentY));
+            Atom atom = AtomsFactory.create(atomTypes[i], new Position(getWidth() - MENU_WIDTH + 60, currentY));
             atom.paintTo(canvas, false, 1);
 
             canvas.setColor(Color.BLACK);
@@ -227,21 +216,6 @@ public class MoleculeConstructor extends JComponent {
 
     private boolean outOfComponent(Position position) {
         return position.x < 0 || position.x > getWidth() || position.y < 0 || position.y > getHeight();
-    }
-
-    private int randomRadius() {
-        Random rnd = ThreadLocalRandom.current();
-        return rnd.nextInt(50) + 10;
-    }
-
-    private Color randomColor() {
-        Random rnd = ThreadLocalRandom.current();
-        return new Color(rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-    }
-
-    private Position randomPosition() {
-        Random rnd = ThreadLocalRandom.current();
-        return new Position(rnd.nextInt(1000), rnd.nextInt(1000));
     }
 
     private static void configureCanvas(Graphics2D canvas) {

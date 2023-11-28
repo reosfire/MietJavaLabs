@@ -5,6 +5,7 @@ import ru.reosfire.special.components.MoleculeConstructor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
 
 public class MainFrame extends JFrame {
     private final static int HEIGHT = 1080;
@@ -12,9 +13,10 @@ public class MainFrame extends JFrame {
 
     MoleculeConstructor moleculeConstructor = new MoleculeConstructor();
 
+    File saveFile = new File("./aaa.mol");
+
     public MainFrame() throws HeadlessException {
         setJMenuBar(createMenuBar());
-
 
         setSize(WIDTH, HEIGHT);
         add(moleculeConstructor);
@@ -27,7 +29,7 @@ public class MainFrame extends JFrame {
         JMenuItem saveItem = new JMenuItem(new AbstractAction("Save") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                moleculeConstructor.saveToFile(saveFile);
             }
         });
         JMenuItem saveAsItem = new JMenuItem(new AbstractAction("Save as") {
@@ -39,7 +41,7 @@ public class MainFrame extends JFrame {
         JMenuItem loadItem = new JMenuItem(new AbstractAction("Load") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                moleculeConstructor.restoreFromFile(saveFile);
             }
         });
 
@@ -52,4 +54,7 @@ public class MainFrame extends JFrame {
         return menuBar;
     }
 
+    private void saveAs() {
+
+    }
 }
